@@ -1,2 +1,2 @@
-const BACKEND_URL='http://localhost:3000';
+const BACKEND_URL='https://spyne-1-frms.onrender.com';
 export {BACKEND_URL};
