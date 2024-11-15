@@ -38,6 +38,59 @@ const createCar = async (req, res) => {
   }
 };
 
+const updateCarById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, tags, car_type, company, dealer } = req.body;
+    let images;
+
+    
+    if (req.files && req.files.length > 0) {
+      images = [];
+      for (const file of req.files) {
+        const result = await uploadOnCloudinary(file.path);
+        if (result && result.url) {
+          images.push(result.url);
+        }
+      }
+    } else {
+      
+      const existingCar = await Car.findById(id);
+      images = existingCar.images;
+    }
+
+    
+    const processedTags = Array.isArray(tags) ? tags : tags.split(',').map(tag => tag.trim());
+
+    
+    const car = await Car.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        tags: processedTags,
+        car_type,
+        company,
+        dealer,
+        images, 
+      },
+      { new: true }
+    );
+
+    if (!car) {
+      return res.status(404).json({ error: 'Car not found' });
+    }
+
+    res.status(200).json({ message: 'Car updated successfully', car });
+  } catch (error) {
+    console.error('Error updating car:', error);
+    res.status(500).json({ error: 'Failed to update car' });
+  }
+};
+
+
+
+
 const getAllCars = async (req, res) => {
   try {
     const cars = await Car.find();
@@ -74,4 +127,4 @@ const deleteCarById = async (req, res) => {
   }
 };
 
-module.exports = { createCar, getAllCars, getCarById, deleteCarById };
+module.exports = { createCar, getAllCars, getCarById, deleteCarById ,updateCarById};
