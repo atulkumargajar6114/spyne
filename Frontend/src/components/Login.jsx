@@ -18,18 +18,7 @@ const Login = () => {
     });
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (!formData.email || !formData.password) {
-  //     setErrorMessage('Please fill in all fields');
-  //     return;
-  //   }
-  //   localStorage.setItem('isLoggedIn', 'true');
-  //   console.log('Login data submitted:', formData);
-  //   setFormData({ email: '', password: '' });
-  //   setErrorMessage('');
-  //   navigate('/');
-  // };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {

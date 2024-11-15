@@ -14,6 +14,21 @@ const createCar=async (data)=>{
     return error;
   }
 }
+
+const updateCarById=async (id,data)=>{
+  try {
+    const response=await axios.put(`${BACKEND_URL}/api/car/${id}`,data,{
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `${localStorage.getItem('token')}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log( error.response?.data || error.message)
+    return error;
+  }
+}
 const getAllCars=async ()=>{
   try {
     const response=await axios.get(`${BACKEND_URL}/api/car/car-list`,{
@@ -58,4 +73,4 @@ const deleteCarById=async (id)=>{
   }
 }
 
-export {createCar,getAllCars,getCarById,deleteCarById};
+export {createCar,getAllCars,getCarById,deleteCarById,updateCarById};

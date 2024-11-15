@@ -4,35 +4,52 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { getAllCars } from '../services/carService';
+import { useNavigate } from 'react-router-dom';
 
 const CarList = () => {
   const [cars, setCars] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredCars, setFilteredCars] = useState([]); 
+  const navigate=useNavigate()
+
   const fetchCars = async () => {
     try {
-      const response=await getAllCars();
+      const response = await getAllCars();
       console.log(response.data);
       setCars(response.data);
+      setFilteredCars(response.data); 
     } catch (error) {
       console.error('Error fetching cars:', error);
     }
   };
 
   const handleSearch = () => {
-    const filteredCars = exampleCars.filter(
+    const query = searchQuery.toLowerCase();
+    const filtered = cars.filter(
       (car) =>
-        car.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        car.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        car.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        car.title.toLowerCase().includes(query) ||
+        car.description.toLowerCase().includes(query) ||
+        car.tags.some((tag) => tag.toLowerCase().includes(query))
     );
-    setCars(filteredCars);
+    setFilteredCars(filtered);
+  };
+  const handleLogout = () => {
+    
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');  
+    navigate('/login');  
   };
 
   useEffect(() => {
     fetchCars();
   }, []);
 
-  // Slider settings
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery]);
+
+  
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -46,6 +63,15 @@ const CarList = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Car Collection</h2>
+      
+      <div className="text-center mb-6">
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
+        >
+          Logout
+        </button>
+      </div>
       <div className="max-w-2xl mx-auto mb-6">
         <input
           type="text"
@@ -57,7 +83,7 @@ const CarList = () => {
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cars.map((car) => (
+        {filteredCars.map((car) => (
           <div key={car._id} className="bg-white border rounded-lg shadow-lg overflow-hidden">
             <Link to={`/cars/${car._id}`}>
               <h3 className="text-xl font-semibold px-4 pt-4 text-gray-800">{car.title}</h3>
@@ -96,7 +122,6 @@ const CarList = () => {
 };
 
 export default CarList;
-
 
 
 

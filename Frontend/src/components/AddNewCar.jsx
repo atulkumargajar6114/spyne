@@ -34,18 +34,17 @@ const AddNewCar = () => {
     e.preventDefault();
     const formData = new FormData();
 
-    // Append car details to FormData
     formData.append('title', car.title);
     formData.append('description', car.description);
     formData.append('car_type', car.car_type);
     formData.append('company', car.company);
     formData.append('dealer', car.dealer);
 
-    // Convert comma-separated tags to an array
+    
     const tagsArray = car.tags.split(',').map(tag => tag.trim());
     tagsArray.forEach(tag => formData.append('tags', tag));
 
-    // Append image files to FormData
+    
     car.images.forEach((image, index) => {
       formData.append(`images`, image);
     });
